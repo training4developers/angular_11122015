@@ -14,6 +14,10 @@ Schedule:
 
 Class Introductions...
 
+## Fork It!
+
+To get started, fork this repo, then clone it to your local computer.
+
 ## Importing Sample Data
 
 Sample data is located in the **assets** folder.  To import, ensure your MongoDB is running, then type the following command:
