@@ -1,0 +1,29 @@
+{
+  "name": "angular_10262015",
+  "version": "0.0.0",
+  "authors": [
+    "Eric W. Greene <eric@training4developers.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/www/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "angular": "~1.4.7",
+    "angular-messages": "~1.4.7",
+    "angular-resource": "~1.4.7",
+    "q": "1.4.1",
+    "angular-mocks": "~1.4.7",
+    "angular-ui-router": "~0.2.15"
+  }
+}
