@@ -38,6 +38,6 @@ $ grunt
 
 The **angular.js** library and related files were downloaded and installed with Bower in the **app/www/libs** folder.  The web application files you will be editing will be in the following folders:
 
-**app/www** - HTML files
-**app/js** - External JavaScript files
-**app/tpl** - External Template files
+- **app/www** - HTML files
+- **app/js** - External JavaScript files
+- **app/tpl** - External Template files
