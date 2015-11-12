@@ -2,18 +2,18 @@ module.exports = function(config) {
 
 	"use strict";
 
-	const
+	var
 		HTTP_STOPPED = 1,
 		HTTP_STARTED = 2;
 
-	const
+	var
 		mongoose = require("mongoose"),
 		path = require("path"),
 		http = require("http"),
 		express = require("express"),
 		bodyParser = require("body-parser");
 
-	let
+	var
 		app = express(),
 		httpServer = http.createServer(app),
 		io = require("socket.io")(httpServer),

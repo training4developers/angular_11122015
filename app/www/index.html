@@ -9,9 +9,94 @@
 		<script src="/libs/angular/angular.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<base href="/">
+		<style>
+			.bold-me { font-weight: bold; }
+		</style>
 	</head>
 
 	<body>
-		Welcome to Class!
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				<span xsap-bold>{{message}}</span>
+				Show Ratings: <input ng-model="showRatings" type="checkbox">
+				<ul>
+					<li ng-repeat="post in posts" sap-comment="post" sap-include-ratings="showRatings"></li>
+				</ul>
+			</div>
+		</div>
+
+		<script>
+
+			var posts = [
+				{ name: "Bob", comment: "I loved it!", rating: 3 },
+				{ name: "Joe", comment: "I liked it!", rating: -2 },
+				{ name: "Sam", comment: "I hated it!", rating: 14 }
+			];
+
+
+			angular.module("MyApp", [])
+				.directive("sapComment", function() {
+
+					return {
+						scope: {
+							post: "=sapComment",
+							showRatings: "=sapIncludeRatings"
+						},
+						template: `
+								<span>{{post.name}}</span>
+								<div>{{post.comment}}</div>
+						`,
+						compile: function(tElement, tAttrs) {
+							console.log("compile function");
+
+							//if (tAttrs.sapIncludeRatings === "true") {
+								tElement.append("<div ng-if='showRatings'>Rating: {{post.rating}}</div>");
+							//}
+
+							return function(scope, element, attrs) {
+								console.log("link function");
+							}
+						}
+					}
+
+				})
+				.directive("sapBold", function() {
+
+					return {
+						compile: function(tElement, tAttrs) {
+
+							tElement.append("<span>{{message}}</span>");
+
+							return function(scope, element, attrs) {
+
+								element.append("<span>{{message}}</span>");
+
+								// jquery
+								//element.addClass("bold-me");
+
+								// angular
+								//attrs.$addClass("bold-me");
+
+							}
+						}
+					};
+
+				})
+				.controller("MyCtrl", function($log, $scope) {
+					$scope.message = "Hi Class!";
+					$log.log("some log message");
+					$scope.posts = posts;
+				});
+
+
+				// myCtrl.$inject = ["$log", "$scope"];
+				//
+				// function myCtrl($log, $scope) {
+				// 	$scope.message = "Hi Class!";
+				// 	$log.log("some log message");
+				// }
+
+		</script>
 	</body>
 </html>
