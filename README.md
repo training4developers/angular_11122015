@@ -2,7 +2,7 @@
 
 ## Class Information
 
-Instructor: Eric Greene
+Instructor: [Eric Greene](https://www.linkedin.com/in/ericwgreene)
 
 Schedule:
 
