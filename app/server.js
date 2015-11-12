@@ -6,16 +6,18 @@ module.exports = function(config) {
 		HTTP_STOPPED = 1,
 		HTTP_STARTED = 2;
 
-	var
+	const
 		mongoose = require("mongoose"),
 		path = require("path"),
 		http = require("http"),
 		express = require("express"),
+		bodyParser = require("body-parser");
+
+	let
 		app = express(),
 		httpServer = http.createServer(app),
 		io = require("socket.io")(httpServer),
-		bodyParser = require("body-parser"),
-		widgetAPIRouter = express.Router(),
+		widgetsRouter = express.Router(),
 		logger = require("./logger")(config.logger),
 		WidgetModel = require("./models/widget"),
 		httpServerStatus = HTTP_STOPPED;
@@ -40,26 +42,23 @@ module.exports = function(config) {
 
 	});
 
-	widgetAPIRouter.get("/widgets", function(req, res) {
+	widgetsRouter.route("/widgets")
+		.get(function(req, res) {
 
-		WidgetModel.find({}, function(err, results) {
-			if (err) {
-				console.log(err);
-				res.status(500).json(err);
-				return;
-			}
-			res.json(results);
-		});
+			WidgetModel.find({}, function(err, results) {
+				if (err) {
+					console.log(err);
+					res.status(500).json(err);
+					return;
+				}
+				res.json(results);
+			});
 
-	});
+		})
+		.post(function(req, res) {
 
-	widgetAPIRouter.get("/widgets/:widgetId", function(req, res) {
-
-		res.status(500).end();
-		return;
-
-		WidgetModel.findById(req.params.widgetId,
-			function(err, result) {
+			var t = new WidgetModel(req.body);
+			t.save(function(err, result) {
 				if (err) {
 					res.status(500).json(err);
 					return;
@@ -67,49 +66,51 @@ module.exports = function(config) {
 				res.json(result);
 			});
 
-	});
-
-	widgetAPIRouter.post("/widgets", function(req, res) {
-
-		var t = new WidgetModel(req.body);
-		t.save(function(err, result) {
-			if (err) {
-				res.status(500).json(err);
-				return;
-			}
-			res.json(result);
 		});
 
-	});
+	widgetsRouter.route("/widgets/:widgetId")
+		.get(function(req, res) {
 
-	widgetAPIRouter.put("/widgets/:widgetId", function(req, res) {
+			res.status(500).end();
+			return;
 
-		WidgetModel.findByIdAndUpdate(req.params.widgetId,
-			req.body,
-			function(err, result) {
-				if (err) {
-					res.status(500).json(err);
-					return;
-				}
-				res.json(req.body);
-			});
+			WidgetModel.findById(req.params.widgetId,
+				function(err, result) {
+					if (err) {
+						res.status(500).json(err);
+						return;
+					}
+					res.json(result);
+				});
 
-	});
+		})
+		.put(function(req, res) {
 
-	widgetAPIRouter.delete("/widgets/:widgetId", function(req, res) {
+			WidgetModel.findByIdAndUpdate(req.params.widgetId,
+				req.body,
+				function(err, result) {
+					if (err) {
+						res.status(500).json(err);
+						return;
+					}
+					res.json(req.body);
+				});
 
-		WidgetModel.findByIdAndRemove(req.params.widgetId,
-			function(err, result) {
-				if (err) {
-					res.status(500).json(err);
-					return;
-				}
-				res.json(result);
-			});
+		})
+		.delete(function(req, res) {
 
-	});
+			WidgetModel.findByIdAndRemove(req.params.widgetId,
+				function(err, result) {
+					if (err) {
+						res.status(500).json(err);
+						return;
+					}
+					res.json(result);
+				});
 
-	app.use("/api", widgetAPIRouter);
+		});
+
+	app.use("/api", widgetsRouter);
 
 	config.webServer.staticFolders.forEach(function(staticFolder) {
 		app.use(staticFolder.url, express.static(
