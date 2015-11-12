@@ -22,7 +22,7 @@ module.exports = function(grunt) {
     mongoServer: {
       host: "localhost",
       port: 27017,
-      dbName: "CDC"
+      dbName: "t4dclass"
     },
     logger: {
       transports: {

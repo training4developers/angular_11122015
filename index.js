@@ -18,7 +18,7 @@ var
     mongoServer: {
       host: "localhost",
       port: 27017,
-      dbName: "CDC"
+      dbName: "t4dclass"
     },
     logger: {
       transports: {

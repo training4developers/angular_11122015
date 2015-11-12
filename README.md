@@ -23,7 +23,7 @@ To get started, fork this repo, then clone it to your local computer.
 Sample data is located in the **assets** folder.  To import, ensure your MongoDB is running, then type the following command:
 
 ```bash
-$ mongoimport -d <name of your database> -c <name of your collection> --jsonArray ./assets/widgets-data.js
+$ mongoimport -d t4dclass -c widgets --jsonArray ./assets/widgets-data.js
 ```
 
 Note: the database and collection do **NOT** need to exist on the MongoDB server.  The import process will create them, if they do not exist.
