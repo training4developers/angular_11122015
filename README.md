@@ -30,12 +30,32 @@ Note: the database and collection do **NOT** need to exist on the MongoDB server
 
 ## Starting the Web Application
 
-The project uses Grunt. To run Grunt from the command line, ensure that the Node Package **grunt-cli** is installed globally.
+The project uses Grunt. To run Grunt from the command line, ensure that the Node Packages **grunt-cli** and **bower** are installed globally. To install them globally, run the following command:
+
+```bash
+$ sudo npm install -g grunt-cli bower
+```
+Note: On Windows, **sudo** should be omitted.
+
+Next, the project's NPM and Bower packages need to be installed. From the project folder, run the following commands in your terminal:
+
+```bash
+$ npm install
+$ bower install
+```
 
 From the root folder of the project, type the following command to run the web application.
 
 ```bash
 $ grunt
+```
+
+The output of the **grunt** command should look like this (timestamps will be different):
+
+```bash
+Running "default" task
+2015-11-12T13:49:13.708Z - info: starting web server listening on port 8080
+2015-11-12T13:49:13.713Z - info: started web server listening on port 8080
 ```
 
 ## Angular.js Application
