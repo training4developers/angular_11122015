@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/libs/oclazyload/dist/ocLazyLoad.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp" sap-lazy-load="['/js/controllers.js']">
+			<div ng-controller="MyCtrl">
+				{{message}}
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", ["oc.lazyLoad"])
+				.directive("sapLazyLoad", function($ocLazyLoad) {
+
+					return {
+						transclude: true,
+						link: function(scope, element, attrs, ctrl, transclude) {
+							$ocLazyLoad.load(scope.$eval(attrs.sapLazyLoad)).then(function() {
+								console.log("made it here...");
+								transclude(function(clone) {
+									element.append(clone);
+								});
+							});
+						}
+					};
+
+				})
+				.run(function($ocLazyLoad) {
+					// $ocLazyLoad.load('js/services.js').catch(function() {
+					// 	console.log("failed to load services module");
+					// });
+				});
+
+		</script>
+	</body>
+</html>

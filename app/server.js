@@ -117,6 +117,10 @@ module.exports = function(config) {
 			path.join(config.webServer.wwwFolder, staticFolder.folder)));
 	});
 
+	app.use("/js", function(req, res) {
+		res.status(404).end();
+	});
+
 	app.use("/", function(req, res) {
 
 		res.sendFile(config.webServer.defaultFile, function(err) {

@@ -12,7 +12,8 @@ var
 				{ url: "/libs", folder: "libs" },
 				{ url: "/tpl", folder: "tpl" },
 				{ url: "/js", folder: "js" },
-				{ url: "/css", folder: "css" }
+				{ url: "/css", folder: "css" },
+				{ url: "/jasmine", folder: "jasmine" }
 			]
 		},
     mongoServer: {

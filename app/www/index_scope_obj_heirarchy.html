@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+		<style>
+			div {
+				margin:5px;
+				padding:5px;
+				border:2px solid blue;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			Scope ID: {{$id}}<br>
+			RootScope
+
+			<div ng-controller="MyCtrl">
+				Scope ID: {{$id}}<br>
+				{{message}}
+
+				<div ng-controller="MyCtrl">
+					Scope ID: {{$id}}<br>
+					{{message}}
+				</div>
+				<div ng-controller="MyCtrl">
+					Scope ID: {{$id}}<br>
+					{{message}}
+				</div>
+
+			</div>
+			<div ng-controller="MyCtrl">
+				Scope ID: {{$id}}<br>
+				{{message}}
+			</div>
+			<div ng-controller="MyCtrl">
+				Scope ID: {{$id}}<br>
+				{{message}}
+			</div>
+		</div>
+
+		<script>
+
+			var counter = 0;
+
+			angular.module("MyApp", [])
+				.controller("MyCtrl", function($log, $scope) {
+					$scope.message = "Scope Counter " + counter++;
+				});
+
+		</script>
+	</body>
+</html>

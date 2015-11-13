@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+		<style>
+			.bold-me { font-weight: bold; }
+		</style>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				Show Ratings: <input ng-model="showRatings" type="checkbox">
+				<ul>
+					<li ng-repeat="post in posts" sap-comment="post" sap-include-ratings="showRatings"></li>
+				</ul>
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", [])
+				.directive("sapComment", function() {
+
+					return {
+						scope: {
+							post: "=sapComment",
+							showRatings: "=sapIncludeRatings"
+						},
+						template: `
+								<span>{{post.name}} - x: {{x}}, y: {{y}}</span>
+								<div>{{post.comment}}</div>
+								<div ng-if='showRatings'>Rating: {{post.rating}}</div>
+						`,
+						link: function(scope, element, attrs) {
+
+							scope.x = 0;
+							scope.y = 0;
+
+							//scope.$evalAsync(function() {
+								position = element.position();
+								scope.x = Math.floor(position.left);
+								scope.y = Math.floor(position.top);
+							//});
+
+						}
+					};
+
+				})
+				.controller("MyCtrl", function($scope, $timeout) {
+
+					$scope.posts = [];
+
+					$timeout(function() {
+						var count = 1000;
+						while(count--) {
+							$scope.posts.push({ name: "Bob", comment: "I loved it!", rating: 3 });
+						}
+					},1000);
+
+				});
+
+		</script>
+	</body>
+</html>

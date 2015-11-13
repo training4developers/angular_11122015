@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+		<style>
+			div {
+				margin:5px;
+				padding:5px;
+				border:2px solid blue;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="ParentCtrl">
+				Show Edit Mode: <input ng-model="showEditMode" type="checkbox">
+				<br>{{parentMessage}}
+				<div ng-if="showEditMode" ng-controller="ChildCtrl">
+					<input ng-model="childMessage">
+				</div>
+			</div>
+		</div>
+
+		<script>
+
+			var counter = 0;
+
+			angular.module("MyApp", [])
+				.controller("ParentCtrl", function() {
+				})
+				.controller("ChildCtrl", function($scope) {
+
+					$scope.$watch("childMessage", function(newValue) {
+
+						$scope.$parent.$parent.parentMessage = newValue;
+					})
+				});
+
+		</script>
+	</body>
+</html>

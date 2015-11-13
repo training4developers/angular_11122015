@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp" sap-lazy-load="MyCtrl">
+			<div ng-controller="MyCtrl">
+				{{message}}
+			</div>
+		</div>
+
+		<script>
+
+			var controllerProvider;
+
+			function MyCtrl($scope) {
+				$scope.message = "Hi Class!";
+			}
+
+			angular.module("MyApp", [])
+				.config(function($controllerProvider) {
+					controllerProvider = $controllerProvider;
+					console.dir(controllerProvider);
+				})
+				.directive("sapLazyLoad", function() {
+
+					return {
+						transclude: true,
+						link: function(scope, element, attrs, ctrl, transclude) {
+
+							controllerProvider.register(attrs.sapLazyLoad, window[attrs.sapLazyLoad]);
+							transclude(function(clone) {
+								element.append(clone);
+							});
+
+
+						}
+					};
+
+				});
+
+		</script>
+	</body>
+</html>

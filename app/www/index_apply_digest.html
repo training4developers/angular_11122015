@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+		<style>
+			div {
+				margin:5px;
+				padding:5px;
+				border:2px solid blue;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				{{message}}
+				<button onclick="clickMe()">Click Me</button>
+			</div>
+		</div>
+
+		<script>
+
+
+			angular.module("MyApp", [])
+				.controller("MyCtrl", function($scope) {
+
+					$scope.message = "Not Clicked!";
+
+					window.clickMe = function() {
+
+						//$scope.$apply(function() {
+							try {
+							$scope.message = "Clicked!";
+							console.log("I clicked...");
+						} catch() {
+
+						}finally {
+							//});
+							$scope.$digest();
+						}
+					}
+				});
+
+		</script>
+	</body>
+</html>

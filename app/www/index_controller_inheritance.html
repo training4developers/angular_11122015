@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+		<style>
+			div {
+				margin:5px;
+				padding:5px;
+				border:2px solid blue;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+
+			<div ng-controller="MyCtrl as ctrl">
+			</div>
+
+			<!-- <div my-dir="1">
+				<div my-dir="2">
+					<div my-dir="3"></div>
+				</div>
+			</div> -->
+		</div>
+
+		<script>
+
+			function BaseController(scope) {
+				this.events = {};
+
+				scope.$on("$destroy", function() {
+
+					this.off("message", )
+
+				});
+			}
+
+			BaseController.prototype.on = function(eventName, eventHandler) {
+				this.events[eventName] = [];
+				this.events[eventName].push(eventHandler);
+				console.log("called on");
+
+				this.
+
+			}
+
+			MyController.$inject = ["$scope"];
+
+			// function MyController($scope) {
+			// 	this._super.call(this, $scope);
+
+				this.on("message", function() {
+					console.log("do nothing");
+				});
+
+
+			}
+
+			MyController.prototype = Object.create(BaseController.prototype);
+			MyController.prototype.constructor = MyController;
+			MyController.prototype._super = BaseController;
+
+			angular.module("MyApp", [])
+				.controller("MyCtrl", MyController)
+				.directive("myDir", function($compile) {
+
+					return {
+						controller: function($scope, $element, $attrs) {
+							console.log("controller: " + $attrs.myDir);
+						},
+						compile: function(tElement, tAttrs) {
+
+							tElement.append("{{message}}");
+							console.log("compile: " + tAttrs.myDir);
+
+							return {
+									pre: function(scope, element, attrs, ctrls) {
+										console.log("pre-link: " + attrs.myDir);
+									}
+									// post: function(scope, element, attrs) {
+									// 	console.log("post-link: " + attrs.myDir);
+									// 	// var linkingFn = $compile("<span>{{message}}</span>");
+									// 	// var domElements = linkingFn(scope);
+									// 	// element.append(domElements);
+									// }
+							};
+						}
+					}
+
+				})
+				.run(function($rootScope) {
+					$rootScope.message = "Hi Class!";
+				});
+
+		</script>
+	</body>
+</html>

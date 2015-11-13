@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+		<style>
+			div {
+				margin:5px;
+				padding:5px;
+				border:2px solid blue;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="LeftCtrl">
+				{{message}}
+			</div>
+			<div ng-controller="RightCtrl">
+				<input ng-model="message">
+			</div>
+		</div>
+
+		<script>
+
+			var counter = 0;
+
+			angular.module("MyApp", [])
+				.factory("Events", function() {
+
+					var events = {};
+
+					return {
+						on: function(eventName, eventHandler) {
+							if (!events[eventName]) {
+								events[eventName] = [];
+							}
+							events[eventName].push(eventHandler);
+						},
+						trigger: function(eventName, eventArgs) {
+
+							if (events[eventName]) {
+								events[eventName].forEach(function(eventHandler) {
+									eventHandler(eventArgs);
+								});
+							}
+						}
+					};
+
+				})
+				.controller("LeftCtrl", function($scope, Events) {
+
+					function handleMessage(msg) {
+						$scope.message = msg;
+					}
+
+					Events.on("message-changed", handleMessage);
+
+					$scope.$on("$destroy", function() {
+						Events.off("message-changed", handleMessage);
+					});
+				})
+				.controller("RightCtrl", function($scope, Events) {
+					$scope.$watch("message", function(newValue) {
+						Events.trigger("message-changed", newValue);
+					});
+
+					console.dir($scope);
+				});
+
+		</script>
+	</body>
+</html>
