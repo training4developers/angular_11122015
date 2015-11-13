@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				<!-- ngRepeat
+				<ul>
+					<li ng-repeat="color in colors">{{color}}</li>
+				</ul> -->
+				sapRepeat
+				<ul sap-repeat="color in colors | orderBy:'toString()'">
+					<li>{{color}}</li>
+				</ul>
+			</div>
+		</div>
+
+		<script>
+			angular.module("MyApp", [])
+				.directive("sapRepeat", function($compile) {
+
+					return {
+						transclude: true,
+						compile: function(tElement, tAttrs) {
+
+							var tokens = tAttrs.sapRepeat.split(" ");
+							var itemName = tokens[0];
+							var listName = tokens[2];
+							var listExp = tokens.splice(2).join(" ");
+
+							return function(scope, element, attrs, ctrl, transclude) {
+
+								var childScopes = [];
+
+								scope.$watchCollection(listName, function(newList, oldList, scope) {
+
+									element.empty();
+
+									childScopes.forEach(function(childScope) {
+										childScope.$destroy();
+									});
+									childScopes = [];
+
+									scope.$eval(listExp).forEach(function(item) {
+										var childScope = scope.$new();
+										childScope[itemName] = item;
+										transclude(childScope, function(clone) {
+											element.append(clone);
+										});
+										childScopes.push(childScope);
+									})
+								});
+
+							};
+						}
+					};
+
+				})
+				.controller("MyCtrl", function($scope, $timeout) {
+
+
+					$scope.colors = [
+						"gold","red","black","green","white",
+						"saffron","navyblue","blue","yellow"
+					];
+
+					$timeout(function() {
+						$scope.colors.push("orange");
+						console.log("timeout expired");
+					}, 1000);
+
+				});
+
+		</script>
+	</body>
+</html>

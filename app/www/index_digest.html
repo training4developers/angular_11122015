@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			{{rootMessage}}
+			<div ng-controller="MyCtrl">
+				{{message}}<br>
+				<button sap-click="clickMe()">Click Me</button>
+			</div>
+		</div>
+
+		<script>
+			angular.module("MyApp", [])
+				.directive("sapClick", function() {
+
+					return {
+						scope: {
+							click: "&sapClick"
+						},
+						link: function(scope, element) {
+
+							element.on("click", function() {
+								scope.$apply(function() {
+									scope.click();
+								});
+							})
+
+						}
+					}
+
+				})
+				.controller("MyCtrl", function($scope, $timeout, $rootScope) {
+					$scope.message = "Not Clicked!";
+
+					$scope.clickMe = function() {
+						//$scope.$apply(function() {
+							$scope.$evalAsync(function() {
+								$rootScope.rootMessage = "New Root Message";
+								$scope.message = "I was clicked!";
+							});
+							//$scope.$digest();
+						//});
+						console.log("I ran...");
+					};
+
+				})
+				.run(function($rootScope) {
+					$rootScope.rootMessage = "Original Root Message";
+				});
+
+		</script>
+	</body>
+</html>

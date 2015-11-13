@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				<div my-dir>
+					<b>{{message}}</b>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			angular.module("MyApp", [])
+				.directive("myDir", function($compile) {
+
+					return {
+						//transclude: true,
+						//template: "<h1>My Document</h1>",
+						compile: function(tElement, tAttrs) {
+
+							var tpl = tElement.html();
+							tElement.empty();
+
+							return function(scope, element, attrs, ctrl) {
+
+								function transclude(fn) {
+									var linkingFn = $compile(tpl);
+									var domElements = linkingFn(scope);
+									fn(domElements);
+								}
+
+								transclude(function(clone) {
+									element.append(clone);
+								});
+								transclude(function(clone) {
+									element.append(clone);
+								});
+								transclude(function(clone) {
+									element.append(clone);
+								});
+								transclude(function(clone) {
+									element.append(clone);
+								});
+
+							}
+						}
+					};
+
+				})
+				.controller("MyCtrl", function($scope) {
+					$scope.message = "Hi Class!";
+				});
+
+		</script>
+	</body>
+</html>

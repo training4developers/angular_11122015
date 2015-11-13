@@ -15,68 +15,92 @@
 	<body>
 
 		<div ng-app="MyApp">
-			<div ng-controller="MyCtrl">
-				<span simple-bold>{{message | toUpperCase}}</span>
+			<div ng-controller="MyCtrl" sap-bold>
+				{{message | sapUpperCase}}
 			</div>
 		</div>
 
 		<script>
 
-			var
-				controllerProvider,
-				filterProvider,
-				directiveProvider,
-				serviceProvider;
-
-			// controller
-			function MyCtrl($scope, simpleLogger) {
-				$scope.message = "Hi Class!";
-				simpleLogger.log($scope.message);
-			}
-
-			// filter
-			function toUpperCase() {
-				return function(value) {
-					return String(value).toUpperCase();
-				};
-			}
-
-			// directive
-			function simpleBold() {
-				return function(scope, element, attrs) {
-					element.css("font-weight", "bold");
-				};
-			}
-
-			// service
-			function simpleLogger() {
-				return {
-					log: function(msg) {
-						console.log(msg);
-					}
-				}
-			}
+			var controllerProvider;
 
 			angular.module("MyApp", [])
-				.config(function($controllerProvider, $filterProvider, $compileProvider, $provide) {
+				.provider("asyncLoader", function() {
 
-					console.dir($controllerProvider);
-					console.dir($filterProvider);
-					console.dir($compileProvider);
-					console.dir($provide);
+					var
+						_controllerProvider, _filterProvider, _directiveProvider, _serviceProvider;
 
-					controllerProvider = $controllerProvider;
-					filterProvider = $filterProvider;
-					directiveProvider = $compileProvider;
-					serviceProvider = $provide;
+					return {
+						setControllerProvider: function(controllerProvider) {
+							_controllerProvider = controllerProvider;
+						},
+						setFilterProvider: function(filterProvider) {
+							_filterProvider = filterProvider;
+						},
+						setDirectiveProvider: function(directiveProvider) {
+							_directiveProvider = directiveProvider;
+						},
+						setServiceProvider: function(serviceProvider) {
+							_serviceProvider = serviceProvider;
+						},
+						$get: function() {
+							return {
+								registerController: function(controllerName, controllerFunction) {
+									_controllerProvider.register(controllerName, controllerFunction);
+								},
+								registerFilter: function(filterName, filterFunction) {
+									_filterProvider.register(filterName, function() {
+
+										return filterFunction;
+
+									});
+								},
+								registerDirective: function(directiveName, directiveFunction) {
+									_directiveProvider.directive(directiveName, directiveFunction);
+								},
+								registerFactory: function(factoryName, factoryFunction) {
+									_serviceProvider.factory(factoryName, factoryFunction);
+								}
+							};
+						}
+					};
 
 				})
-				.run(function() {
+				.config(function(asyncLoaderProvider, $controllerProvider, $filterProvider, $compileProvider, $provide) {
 
-					filterProvider.register("toUpperCase", toUpperCase);
-					controllerProvider.register("MyCtrl", MyCtrl);
-					directiveProvider.directive("simpleBold", simpleBold);
-					serviceProvider.factory("simpleLogger", simpleLogger);
+					asyncLoaderProvider.setControllerProvider($controllerProvider);
+					asyncLoaderProvider.setFilterProvider($filterProvider);
+					asyncLoaderProvider.setDirectiveProvider($compileProvider);
+					asyncLoaderProvider.setServiceProvider($provide);
+
+				})
+				.run(function(asyncLoader) {
+
+					asyncLoader.registerController("MyCtrl", function($scope, simpleLogger) {
+						$scope.message = "Hi Class!";
+						simpleLogger($scope.message);
+
+					});
+
+					asyncLoader.registerFilter("sapUpperCase", function(value) {
+						return String(value).toUpperCase();
+					});
+
+					asyncLoader.registerDirective("sapBold", function() {
+
+						return function(scope, element) {
+							element.css("font-weight", "bold");
+						};
+
+					});
+
+					asyncLoader.registerFactory("simpleLogger", function() {
+
+						return function(msg) {
+							console.log(msg);
+						};
+
+					});
 
 				});
 

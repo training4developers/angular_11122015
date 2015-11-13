@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				<!-- ngRepeat
+				<ul>
+					<li ng-repeat="color in colors">{{color}}</li>
+				</ul> -->
+				sapRepeat
+				<ul>
+					<li>first element</li>
+					<li sap-repeat="color in colors | orderBy:'toString()'">{{color}}</li>
+					<li>last element</li>
+				</ul>
+			</div>
+		</div>
+
+		<script>
+			angular.module("MyApp", [])
+				.directive("sapRepeat", function($compile) {
+
+					return {
+						transclude: 'element',
+						compile: function(tElement, tAttrs) {
+
+							var tokens = tAttrs.sapRepeat.split(" ");
+							var itemName = tokens[0];
+							var listName = tokens[2];
+							var listExp = tokens.splice(2).join(" ");
+
+							return function(scope, element, attrs, ctrl, transclude) {
+
+								var listElements = [];
+
+								scope.$watchCollection(listName, function(newList, oldList, scope) {
+
+									var lastElement = element;
+									listElements.forEach(function(listElement) {
+										angular.element(listElement).scope().$destroy();
+										listElement.remove();
+									});
+									listElements = [];
+
+									scope.$eval(listExp).forEach(function(item) {
+										var childScope = scope.$new();
+										childScope[itemName] = item;
+										transclude(childScope, function(clone) {
+											lastElement.after(clone);
+											lastElement = clone;
+										});
+										listElements.push(lastElement);
+									})
+								});
+
+							};
+						}
+					};
+
+				})
+				.controller("MyCtrl", function($scope, $timeout) {
+
+
+					$scope.colors = [
+						"gold","red","black","green","white",
+						"saffron","navyblue","blue","yellow"
+					];
+
+					$timeout(function() {
+						$scope.colors.push("orange");
+						console.log("timeout expired");
+					}, 3000);
+
+				});
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+
+				<ul>
+					<li ng-repeat="post in posts" sap-post></li>
+				</ul>
+
+			</div>
+		</div>
+
+		<script>
+			angular.module("MyApp", [])
+				.directive("sapPost", function() {
+
+					return {
+						template: `<span>{{post.name}} - x: {{x}}, y: {{y}}</span><div>{{post.msg}}</div>`,
+						link: function(scope, element, attrs) {
+
+							scope.$evalAsync(function() {
+								var pos = element.position();
+								scope.x = pos.left;
+								scope.y = pos.top;
+							});
+
+						}
+					};
+
+				})
+				.controller("MyCtrl", function($scope, $timeout, $rootScope) {
+
+					$scope.posts = [];
+
+					$timeout(function() {
+
+						var count = 1000;
+						while(count--) {
+							$scope.posts.push({
+								name: "Bob", msg: "Had a great time!"
+							});
+						}
+
+						console.log("timeout expired");
+
+					}, 2000);
+
+
+				});
+
+		</script>
+	</body>
+</html>

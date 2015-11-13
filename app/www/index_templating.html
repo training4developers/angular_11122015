@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<script id="/tpl/test.html" type="text/ng-template">
+				<b>{{message}}</b>
+			</script>
+			<div ng-controller="MyCtrl">
+				<div parent-dir>
+					<div child-dir>Some Text</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			angular.module("MyApp", [])
+				.directive("parentDir", function() {
+
+					return {
+						compile: function() {
+							console.log("compile parent dir");
+
+							return function() {
+								console.log("link parent dir");
+							}
+						}
+					}
+
+				})
+				.directive("childDir", function($templateCache) {
+
+					var templateUrl = "/tpl/test.html";
+					var tpl = $templateCache.get(templateUrl);
+
+					var ddo = {};
+
+					if (tpl) {
+						ddo.template = tpl;
+					} else {
+						ddo.templateUrl = templateUrl;
+					}
+
+					ddo.link = function() {
+						console.log("link child dir");
+					}
+
+					return ddo;
+
+				})
+				.controller("MyCtrl", function($scope, $timeout) {
+
+					$scope.message = "Hi Class!";
+
+					$scope.colors = [
+						"gold","red","black","green","white",
+						"saffron","navyblue","blue","yellow"
+					];
+
+				})
+				.run(function($templateCache, $templateRequest) {
+
+					// $templateCache.put("/tpl/test.html", "<b>{{message}}</b>");
+					//
+					// $templateRequest("/tpl/test.html").then(function(tpl) {
+					// 	console.log(tpl);
+					// });
+
+				});
+
+		</script>
+	</body>
+</html>
