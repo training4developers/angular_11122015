@@ -10,98 +10,59 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<base href="/">
 
+		<style>
+
+			input.ng-touched.ng-invalid {
+				border: 2px solid red;
+
+			}
+
+		</style>
+
 	</head>
 
 	<body>
 
 		<div ng-app="MyApp">
-			<div ng-controller="MyCtrl" sap-bold>
-				{{message | sapUpperCase}}
+			<div ng-controller="MyCtrl">
+				<form name="messageForm" novalidate>
+					{{message}}<br>
+					<input ng-model="message" ng-model-options="{ updateOn: 'blur' }" name="message" sap-required>
+					<span ng-show="messageForm.message.$invalid">Please enter a message!</span>
+				</form>
 			</div>
 		</div>
 
 		<script>
 
-			var controllerProvider;
-
 			angular.module("MyApp", [])
-				.provider("asyncLoader", function() {
-
-					var
-						_controllerProvider, _filterProvider, _directiveProvider, _serviceProvider;
+				.directive("sapRequired", function() {
 
 					return {
-						setControllerProvider: function(controllerProvider) {
-							_controllerProvider = controllerProvider;
-						},
-						setFilterProvider: function(filterProvider) {
-							_filterProvider = filterProvider;
-						},
-						setDirectiveProvider: function(directiveProvider) {
-							_directiveProvider = directiveProvider;
-						},
-						setServiceProvider: function(serviceProvider) {
-							_serviceProvider = serviceProvider;
-						},
-						$get: function() {
-							return {
-								registerController: function(controllerName, controllerFunction) {
-									_controllerProvider.register(controllerName, controllerFunction);
-								},
-								registerFilter: function(filterName, filterFunction) {
-									_filterProvider.register(filterName, function() {
+						require: "ngModel",
+						link: function(scope, element, attrs, ctrl) {
 
-										return filterFunction;
+							function validate(value) {
 
-									});
-								},
-								registerDirective: function(directiveName, directiveFunction) {
-									_directiveProvider.directive(directiveName, directiveFunction);
-								},
-								registerFactory: function(factoryName, factoryFunction) {
-									_serviceProvider.factory(factoryName, factoryFunction);
+								if (value == null || String(value).length === 0) {
+									ctrl.$setValidity("sap-required", false);
+									return;
+								} else {
+									ctrl.$setValidity("sap-required", true);
+									return value;
 								}
-							};
+
+							}
+
+							ctrl.$formatters.push(validate);
+							ctrl.$parsers.push(validate);
+
+
 						}
 					};
 
 				})
-				.config(function(asyncLoaderProvider, $controllerProvider, $filterProvider, $compileProvider, $provide) {
-
-					asyncLoaderProvider.setControllerProvider($controllerProvider);
-					asyncLoaderProvider.setFilterProvider($filterProvider);
-					asyncLoaderProvider.setDirectiveProvider($compileProvider);
-					asyncLoaderProvider.setServiceProvider($provide);
-
-				})
-				.run(function(asyncLoader) {
-
-					asyncLoader.registerController("MyCtrl", function($scope, simpleLogger) {
-						$scope.message = "Hi Class!";
-						simpleLogger($scope.message);
-
-					});
-
-					asyncLoader.registerFilter("sapUpperCase", function(value) {
-						return String(value).toUpperCase();
-					});
-
-					asyncLoader.registerDirective("sapBold", function() {
-
-						return function(scope, element) {
-							element.css("font-weight", "bold");
-						};
-
-					});
-
-					asyncLoader.registerFactory("simpleLogger", function() {
-
-						return function(msg) {
-							console.log(msg);
-						};
-
-					});
-
+				.controller("MyCtrl", function() {
 				});
 
 		</script>

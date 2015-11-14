@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/libs/oclazyload/dist/ocLazyLoad.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp" oc-lazy-load="['/js/controllers.js']">
+			<div ng-controller="MyCtrl">
+				{{message}}
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", ["oc.lazyLoad"]);;
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp">
+			<div ng-controller="MyCtrl">
+				{{message}}
+			</div>
+		</div>
+
+		<script>
+
+			angular.module("MyApp", [])
+				.factory("socketLogger", function() {
+
+					var socket = io();
+
+					return {
+						info: function(msg) {
+							socket.emit("log", {
+								messageType: "info",
+								message: msg
+							});
+						},
+						error: function(msg) {
+							socket.emit("log", {
+								messageType: "error",
+								message: msg
+							});
+						}
+					};
+				})
+				.config(function($provide) {
+					$provide.decorator("$log", function($delegate, socketLogger) {
+
+						originalInfoLog = $delegate.info;
+						originalErrorLog = $delegate.error;
+
+						$delegate.info = function(msg) {
+							originalInfoLog(msg);
+							socketLogger.info(msg);
+						};
+
+						$delegate.error = function(msg) {
+							originalInfoLog(msg);
+							socketLogger.error(msg);
+						};
+
+						return $delegate;
+
+					});
+				})
+				.controller("MyCtrl", function($scope, $log) {
+					$scope.message = "Hi Message";
+					$log.info("this worked!")
+				});
+
+		</script>
+	</body>
+</html>

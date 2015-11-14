@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Welcome to Class!</title>
+		<link href="/css/site.css" rel="stylesheet">
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+		<script src="/libs/jquery/dist/jquery.js"></script>
+		<script src="/libs/angular/angular.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<base href="/">
+
+	</head>
+
+	<body>
+
+		<div ng-app="MyApp" async-load="/js/async.js">
+			<div ng-controller="MyCtrl" sap-bold>
+				{{message | sapUpperCase}}
+			</div>
+		</div>
+
+		<script>
+
+			var controllerProvider;
+
+			angular.module("MyApp", [])
+				.directive("asyncLoad", function(asyncLoader, $http, $compile) {
+
+					var theAsyncLoader = asyncLoader
+					var loaderPromise;
+
+					return {
+						//transclude: true,
+						compile: function(tElement, tAttrs) {
+
+							var tpl = tElement.html();
+							tElement.empty();
+
+							loaderPromise = $http.get(tAttrs.asyncLoad).then(function(results) {
+								var asyncLoader = theAsyncLoader;
+								eval(results.data);
+							});
+
+							return function(scope, element, attrs, ctrl, transclude) {
+
+								loaderPromise.then(function() {
+									// transclude(function(clone) {
+									// 	element.append(clone);
+									// });
+									element.append($compile(tpl)(scope));
+								});
+							};
+
+						}
+					}
+
+				})
+				.provider("asyncLoader", function() {
+
+					var
+						_controllerProvider, _filterProvider, _directiveProvider, _serviceProvider;
+
+					return {
+						setControllerProvider: function(controllerProvider) {
+							_controllerProvider = controllerProvider;
+						},
+						setFilterProvider: function(filterProvider) {
+							_filterProvider = filterProvider;
+						},
+						setDirectiveProvider: function(directiveProvider) {
+							_directiveProvider = directiveProvider;
+						},
+						setServiceProvider: function(serviceProvider) {
+							_serviceProvider = serviceProvider;
+						},
+						$get: function() {
+							return {
+								registerController: function(controllerName, controllerFunction) {
+									_controllerProvider.register(controllerName, controllerFunction);
+								},
+								registerFilter: function(filterName, filterFunction) {
+									_filterProvider.register(filterName, function() {
+
+										return filterFunction;
+
+									});
+								},
+								registerDirective: function(directiveName, directiveFunction) {
+									_directiveProvider.directive(directiveName, directiveFunction);
+								},
+								registerFactory: function(factoryName, factoryFunction) {
+									_serviceProvider.factory(factoryName, factoryFunction);
+								}
+							};
+						}
+					};
+
+				})
+				.config(function(asyncLoaderProvider, $controllerProvider, $filterProvider, $compileProvider, $provide) {
+
+					asyncLoaderProvider.setControllerProvider($controllerProvider);
+					asyncLoaderProvider.setFilterProvider($filterProvider);
+					asyncLoaderProvider.setDirectiveProvider($compileProvider);
+					asyncLoaderProvider.setServiceProvider($provide);
+
+				});
+
+		</script>
+	</body>
+</html>

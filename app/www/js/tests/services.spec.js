@@ -28,7 +28,7 @@ describe("Service Tests", function() {
 		httpBackend.expectGET('/js/app/data.js').respond(getData());
 
 		service.getAll().then(function (result) {
-			expect(result.data.people.length).toEqual(4);
+			expect(result.data.people.length).toEqual(3);
 		});
 
 		httpBackend.flush();
